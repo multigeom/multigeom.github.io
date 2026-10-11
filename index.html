@@ -39,7 +39,7 @@
       <!-- TODO: add the OpenReview URL when it is known -->
       <a class="button" href="https://github.com/sazio/MultiscaleInformationGeometry">Paper code</a>
       <a class="button" href="https://pypi.org/project/multigeom/">Python package</a>
-      <a class="button" href="https://github.com/steevelaquitaine/multigeom-tutorials">Tutorials</a>
+      <a class="button" href="https://multigeom.github.io/multigeom/">Documentation &amp; Demos</a>
       <a class="button" href="https://huggingface.co/steevelaquitaine/multigeom">Checkpoints</a>
     </div>
   </div>
@@ -148,7 +148,7 @@
 multigeom.validate_encoder(encoder)        # checks the encoder contract and names the rule it breaks
 fisher = multigeom.compute_fisher(image=x, encoder=encoder, sigma=0.22, top_k=10)
 fisher.eigenvalues, fisher.eigenvectors    # leading eigenpairs of J(x)</code></pre>
-    <p>The tutorials run on your data, from the first check of an encoder to the figures of the paper.</p>
+    <p>The demo notebooks run on your data, from the first check of an encoder to the figures of the paper.</p>
     <div class="cards">
       <div class="card-nb"><h3>0. Bring your own encoder</h3><p>Check your model against the encoder contract and compute its Fisher metric.</p></div>
       <div class="card-nb"><h3>1. Leading eigenvectors</h3><p>Eigenvectors of G(x) and J(x) for an example image (Fig. 3, 4B-C).</p></div>
@@ -156,7 +156,7 @@ fisher.eigenvalues, fisher.eigenvectors    # leading eigenpairs of J(x)</code></
       <div class="card-nb"><h3>3. Local metric field</h3><p>Metric ellipses around a reference image (Fig. 5).</p></div>
       <div class="card-nb"><h3>4. Bures-Wasserstein</h3><p>Distances between geometries (Fig. 6).</p></div>
     </div>
-    <p style="margin-top:1rem"><a href="https://github.com/steevelaquitaine/multigeom-tutorials">Open the tutorials repository</a></p>
+    <p style="margin-top:1rem"><a href="https://multigeom.github.io/multigeom/demos.html">Browse the demos in the documentation</a></p>
   </div>
 </section>
 

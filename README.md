@@ -1,7 +1,7 @@
 # multigeom.github.io
 
 Landing page of the paper *A multi-scale information geometry reveals the structure of mutual information in neural populations*
-and of its Python package [`multigeom`](https://pypi.org/project/multigeom/). Live at <https://multigeom.github.io>.
+and of its Python package [`multigeom`](https://pypi.org/project/multigeom/). Its "Documentation & Demos" tab opens the Sphinx documentation of the package, which lives in the package repository (<https://multigeom.github.io/multigeom/>). Live at <https://multigeom.github.io>.
 
 A static site with no build step: open `index.html` in a browser, or serve the folder:
 
