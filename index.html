@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>multigeom</title>
+  <meta name="description" content="A multi-scale information geometry reveals the structure of mutual information in neural populations. Paper and Python package.">
+  <meta property="og:title" content="multigeom: multi-scale information geometry of neural populations">
+  <meta property="og:description" content="A multi-scale extension of the Fisher information metric, estimated with diffusion models. Paper, Python package and tutorials.">
+  <meta property="og:image" content="docs/assets/videos/eigenvector_walk_poster.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Castoro:ital@0;1&family=Noto+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+  <script>
+    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+<section class="section">
+  <div class="container has-text-centered">
+    <h1 class="title is-2 hero-title">A multi-scale information geometry reveals the structure of mutual information in neural populations</h1>
+    <div class="authors">
+      <span class="author">Simone Azeglio<sup>1,2</sup></span>
+      <span class="author">Steeve Laquitaine<sup>1</sup></span>
+      <span class="author">Ulisse Ferrari<sup>1</sup></span>
+      <span class="author">Matthew Chalk<sup>1</sup></span>
+    </div>
+    <div class="affiliations">
+      <sup>1</sup>Institut de la Vision, INSERM, CNRS, Sorbonne Université &nbsp;
+      <sup>2</sup>Laboratoire des Systèmes Perceptifs, ENS-PSL
+    </div>
+    <div class="venue"><strong>NeurIPS 2026</strong></div>
+    <div class="links">
+      <a class="button" href="https://arxiv.org/abs/2605.06304">Paper (arXiv)</a>
+      <!-- TODO: add the OpenReview URL when it is known -->
+      <a class="button" href="https://github.com/sazio/MultiscaleInformationGeometry">Paper code</a>
+      <a class="button" href="https://pypi.org/project/multigeom/">Python package</a>
+      <a class="button" href="https://github.com/steevelaquitaine/multigeom-tutorials">Tutorials</a>
+      <a class="button" href="https://huggingface.co/steevelaquitaine/multigeom">Checkpoints</a>
+    </div>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="container narrow">
+    <figure>
+      <video autoplay loop muted playsinline controls preload="metadata" poster="docs/assets/videos/eigenvector_walk_poster.png"
+             aria-label="An image moved back and forth along the leading eigenvector of the multi-scale Fisher metric G(x) and of the Fisher information J(x), for models of V1 and V4">
+        <source src="docs/assets/videos/eigenvector_walk.mp4" type="video/mp4">
+      </video>
+      <figcaption><strong>The same image, moved along the leading eigenvector of two metrics.</strong>
+        Top: the multi-scale Fisher metric G(x) changes smooth, extended image structure. Bottom: the classical Fisher information J(x)
+        changes fine, high-frequency detail. Left: model fitted to V1. Right: model fitted to V4.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container narrow content">
+    <h2 class="title is-3">Abstract</h2>
+    <p>Understanding how neural population responses represent sensory information is a central problem in systems neuroscience.
+      One approach is to define a representational geometry on stimulus space in which distances reflect how reliably stimuli
+      can be distinguished from neural activity. However, different constructions of these distances can lead to qualitatively
+      different conclusions about the neural code. Here, we show that a unique Riemannian representational geometry emerges from
+      first principles governing how distances contract as stimulus resolution is lost through coarse-graining. This results in
+      a multi-scale extension of the Fisher information metric, capturing encoding structure from fine stimulus details to coarse
+      global distinctions. The resulting geometry is exactly related to the mutual information encoded by the population: well
+      encoded stimulus directions, those contributing more to mutual information, are expanded, whereas poorly encoded
+      directions are contracted. The metric tensor can be estimated using diffusion models, making the framework practical for
+      large neural populations and high-dimensional stimuli. Applied to visual cortical responses to natural images, the
+      eigenvectors of the metric tensor identify stimulus variations that contribute most to information transmission, yielding
+      interpretable features that are robust to modelling choices. Together, these results provide a principled,
+      information-theoretic framework for characterising neural population codes.</p>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="container narrow content">
+    <h2 class="title is-3">The multi-scale Fisher metric</h2>
+    <p>The Fisher information $J(x)$ measures how sensitive the neural response distribution is to a tiny change of the stimulus,
+      but it is purely local. The multi-scale Fisher metric adds up the Fisher information of the stimulus blurred at every
+      diffusion scale $t$:</p>
+    <div class="eq">$$G(x) = \int_0^\infty [\phi_t * J_t](x)\,dt .$$</div>
+    <p>Directions in which this metric is large are the stimulus variations that contribute most to the mutual information between
+      stimulus and response. For natural images, $G(x)$ is estimated with a conditional diffusion model, and its leading
+      eigenvectors show which image features a population encodes best.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container narrow content">
+    <h2 class="title is-3">Results on macaque V1 and V4</h2>
+
+    <h3 class="title is-5">Interpretable eigenvectors</h3>
+    <figure>
+      <img src="docs/assets/images/fig3_def.png" alt="Example image with V1 and V4 receptive fields, and the leading four eigenvectors of G(x) and J(x) for V1 and V4" loading="lazy">
+      <figcaption><strong>Figure 3D-F.</strong> Example image with the V1 and V4 receptive field regions, and the leading four eigenvectors of
+        G(x) (E) and of the Fisher information J(x) (F), for V1 (top) and V4 (bottom).</figcaption>
+    </figure>
+
+    <h3 class="title is-5">Robust across model architectures</h3>
+    <figure>
+      <img src="docs/assets/images/fig4_bc.png" alt="Leading eigenvectors of G(x) and J(x) for Inception and ResNet-50 models fitted to V1 and V4" loading="lazy">
+      <figcaption><strong>Figure 4B-C.</strong> Leading eigenvectors of G(x) (B) and J(x) (C) for each model architecture fitted to V1 and V4.</figcaption>
+    </figure>
+    <figure>
+      <img src="docs/assets/images/fig4_de.png" alt="Subspace alignment of the top-k eigenvectors of G(x) and J(x) against k" loading="lazy">
+      <figcaption><strong>Figure 4D-E.</strong> Subspace alignment of the top-k eigenvectors of G(x) (D) and J(x) (E): models fitted to the same
+        area (solid) against the same model fitted to different areas (dashed), averaged across images.</figcaption>
+    </figure>
+
+    <h3 class="title is-5">The local metric field</h3>
+    <figure>
+      <video autoplay loop muted playsinline controls preload="metadata" poster="docs/assets/videos/metric_field_poster.png"
+             aria-label="Metric ellipses of Inception and ResNet-50 models appearing one grid point at a time, for G(x) and J(x), V1 and V4">
+        <source src="docs/assets/videos/metric_field.mp4" type="video/mp4">
+      </video>
+      <figcaption><strong>Building the field.</strong> Metric ellipses of the Inception (solid) and ResNet-50 (dashed) models appear one grid point
+        at a time, for G(x) (top) and J(x) (bottom), V1 (left) and V4 (right). The G(x) ellipses of the two models stay close
+        everywhere, while the J(x) ellipses differ.</figcaption>
+    </figure>
+    <figure>
+      <img src="docs/assets/images/fig5.png" alt="Ellipses of G(x) and J(x) for Inception and ResNet-50 on a grid of images perturbed along the leading eigenvectors" loading="lazy">
+      <figcaption><strong>Figure 5.</strong> The reference image is perturbed along the two leading eigenvectors of G(x); both models' metrics are
+        projected on the same two-dimensional subspace and drawn as ellipses (A: G(x), B: J(x)), for V1 and V4.</figcaption>
+    </figure>
+
+    <h3 class="title is-5">The same conclusion with another distance</h3>
+    <figure>
+      <img src="docs/assets/images/fig6.png" alt="Bures-Wasserstein distance between geometries as a function of the number of eigenvectors" loading="lazy">
+      <figcaption><strong>Figure 6 (appendix).</strong> Bures-Wasserstein distance between the reconstructed geometries of two models or two areas, as a function of
+        the number k of leading eigenvectors.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="container narrow content">
+    <h2 class="title is-3">Try it on your own model</h2>
+    <p>The <code>multigeom</code> Python package computes these metrics for any fitted PyTorch model of neural responses.</p>
+    <pre><code>pip install multigeom</code></pre>
+    <pre><code>import multigeom
+
+multigeom.validate_encoder(encoder)        # checks the encoder contract and names the rule it breaks
+fisher = multigeom.compute_fisher(image=x, encoder=encoder, sigma=0.22, top_k=10)
+fisher.eigenvalues, fisher.eigenvectors    # leading eigenpairs of J(x)</code></pre>
+    <p>The tutorials run on your data, from the first check of an encoder to the figures of the paper.</p>
+    <div class="cards">
+      <div class="card-nb"><h3>0. Bring your own encoder</h3><p>Check your model against the encoder contract and compute its Fisher metric.</p></div>
+      <div class="card-nb"><h3>1. Leading eigenvectors</h3><p>Eigenvectors of G(x) and J(x) for an example image (Fig. 3, 4B-C).</p></div>
+      <div class="card-nb"><h3>2. Subspace alignment</h3><p>Compare models and areas over many images, on local or serverless GPUs (Fig. 4D-E).</p></div>
+      <div class="card-nb"><h3>3. Local metric field</h3><p>Metric ellipses around a reference image (Fig. 5).</p></div>
+      <div class="card-nb"><h3>4. Bures-Wasserstein</h3><p>Distances between geometries (Fig. 6).</p></div>
+    </div>
+    <p style="margin-top:1rem"><a href="https://github.com/steevelaquitaine/multigeom-tutorials">Open the tutorials repository</a></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container narrow content">
+    <h2 class="title is-3">Citation</h2>
+<pre class="bibtex"><code>@inproceedings{azeglio2026multiscale,
+  title     = {A multi-scale information geometry reveals the structure of mutual information in neural populations},
+  author    = {Azeglio, Simone and Laquitaine, Steeve and Ferrari, Ulisse and Chalk, Matthew},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2026}
+}</code></pre>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container narrow">
+    <p>Code is released under the MIT license. The page layout uses <a href="https://bulma.io">Bulma</a> (MIT).</p>
+  </div>
+</footer>
+
+</body>
+</html>

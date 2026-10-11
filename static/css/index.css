@@ -1,0 +1,40 @@
+:root {
+  --ink: #1f2933;
+  --muted: #5b6770;
+  --accent: #1f6fb2;
+  --line: #e3e8ee;
+  --soft: #f5f7fa;
+  --measure: 46rem;
+}
+html { scroll-behavior: smooth; }
+body { color: var(--ink); font-family: "Noto Sans", system-ui, sans-serif; line-height: 1.65; }
+h1, h2, h3, .title { font-family: "Castoro", Georgia, serif; color: var(--ink); }
+a { color: var(--accent); }
+.hero-title { max-width: 52rem; margin: 0 auto; }
+.authors { margin-top: 1rem; font-size: 1.1rem; }
+.authors .author { display: inline-block; margin: 0 .6rem; }
+.authors sup { color: var(--muted); }
+.affiliations, .venue { color: var(--muted); font-size: .95rem; margin-top: .4rem; }
+.venue strong { color: var(--ink); }
+.links { margin-top: 1.4rem; display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; }
+.links .button { border-radius: 2rem; background: #1f2933; color: #fff; border: 0; }
+.links .button:hover { background: var(--accent); color: #fff; }
+.links .button.is-soon { background: var(--soft); color: var(--muted); border: 1px solid var(--line); cursor: default; }
+.section { padding: 2.5rem 1.25rem; }
+.section.alt { background: var(--soft); }
+.container.narrow { max-width: var(--measure); }
+.content p, .content li { font-size: 1.05rem; }
+.eq { overflow-x: auto; text-align: center; margin: 1rem 0; }
+figure { margin: 1.5rem 0; }
+figure img, figure video { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+figcaption { color: var(--muted); font-size: .95rem; margin-top: .5rem; }
+figcaption strong { color: var(--ink); }
+.takeaway { border-left: 3px solid var(--accent); padding-left: 1rem; margin: 1rem 0; }
+pre { background: #0f1720; color: #e6edf3; border-radius: 8px; padding: 1rem 1.2rem; overflow-x: auto; font-size: .92rem; }
+pre.bibtex { background: var(--soft); color: var(--ink); border: 1px solid var(--line); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; margin-top: 1rem; }
+.card-nb { border: 1px solid var(--line); border-radius: 8px; padding: 1rem; background: #fff; }
+.card-nb h3 { font-size: 1.05rem; margin: 0 0 .3rem 0; }
+.card-nb p { font-size: .95rem; color: var(--muted); margin: 0; line-height: 1.5; }
+footer.footer { background: #fff; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; padding: 2rem 1.25rem; }
+@media (max-width: 600px) { .authors .author { display: block; margin: .1rem 0; } }
