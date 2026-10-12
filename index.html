@@ -141,20 +141,20 @@
 <section class="section alt">
   <div class="container narrow content">
     <h2 class="title is-3">Try it on your own model</h2>
-    <p>The <code>multigeom</code> Python package computes these metrics for any fitted PyTorch model of neural responses.</p>
+    <p>The <code>multigeom</code> Python package computes these metrics for any fitted PyTorch model of neural responses. Load an encoder
+      that is already fitted, or build your own:</p>
     <pre><code>pip install multigeom</code></pre>
     <pre><code>import multigeom
 
-multigeom.validate_encoder(encoder)        # checks the encoder contract and names the rule it breaks
-fisher = multigeom.compute_fisher(image=x, encoder=encoder, sigma=0.22, top_k=10)
-fisher.eigenvalues, fisher.eigenvectors    # leading eigenpairs of J(x)</code></pre>
-    <p>The demo notebooks run on your data, from the first check of an encoder to the figures of the paper.</p>
+encoder = multigeom.load_encoder("inception", area="V1")        # an encoder of the paper, fitted to macaque V1
+responses = encoder.predict(images)                               # predicted neural responses
+fisher = multigeom.compute_fisher(image=x, encoder=encoder, sigma=0.22, top_k=10)   # its Fisher information J(x)</code></pre>
+    <p>The demo notebooks go from the first call to the figures of the paper.</p>
     <div class="cards">
-      <div class="card-nb"><h3>0. Bring your own encoder</h3><p>Check your model against the encoder contract and compute its Fisher metric.</p></div>
-      <div class="card-nb"><h3>1. Leading eigenvectors</h3><p>Eigenvectors of G(x) and J(x) for an example image (Fig. 3, 4B-C).</p></div>
-      <div class="card-nb"><h3>2. Subspace alignment</h3><p>Compare models and areas over many images, on local or serverless GPUs (Fig. 4D-E).</p></div>
-      <div class="card-nb"><h3>3. Local metric field</h3><p>Metric ellipses around a reference image (Fig. 5).</p></div>
-      <div class="card-nb"><h3>4. Bures-Wasserstein</h3><p>Distances between geometries (Fig. 6).</p></div>
+      <div class="card-nb"><h3>0. Use a fitted encoder</h3><p>Load an encoder of the paper, predict neural responses, compute J(x).</p></div>
+      <div class="card-nb"><h3>1. Build your own encoder</h3><p>Backbone, readout, fit to neural data, save and load, on synthetic data with a known ground truth.</p></div>
+      <div class="card-nb"><h3>2. Diffusion model and G(x)</h3><p>Train the diffusion model of your encoder and compute the multi-scale metric.</p></div>
+      <div class="card-nb"><h3>3-6. The paper's figures</h3><p>Eigenvectors, subspace alignment, local metric field, Bures-Wasserstein distance.</p></div>
     </div>
     <p style="margin-top:1rem"><a href="https://multigeom.github.io/multigeom/demos.html">Browse the demos in the documentation</a></p>
   </div>
