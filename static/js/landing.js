@@ -128,10 +128,10 @@
         P.g.fillText(n, P.X(i + 0.5), P.Y(0) + 14);
       });
       note.textContent = metric === "G"
-        ? (t < 0.05
-            ? "At fine scales the information gained is the Fisher information: the monotonic and single-peaked curves coincide."
-            : "As the stimulus is blurred, the single-peaked neuron loses information fastest: stimuli on either side of its peak become confusable. Bars: mutual information; black ticks: ½⟨G⟩, the same number.")
-        : "Fisher geometry: the monotonic and single-peaked neurons have identical Fisher information and identical distances, yet different mutual information.";
+        ? (t < 0.002
+            ? "At the finest scales the contribution is proportional to the Fisher information, so the monotonic and single-peaked neurons nearly coincide."
+            : "At coarser scales the single-peaked neuron contributes less than the monotonic one: once the stimulus is coarse-grained, stimuli on either side of its peak give similar response distributions. Bars: mutual information; black ticks: ½⟨G⟩.")
+        : "Fisher geometry: the monotonic and single-peaked neurons have identical Fisher information and identical distances, and the low-gain neuron has the smallest. Their mutual information is ordered differently: monotonic, then low-gain, then single-peaked.";
     }
     slider.addEventListener("input", draw);
     document.querySelectorAll("#w-metric button").forEach((b) => b.addEventListener("click", () => {
