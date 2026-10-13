@@ -24,6 +24,12 @@ TS = np.logspace(-4, 2.3, 64)                         # blur scales t
 prior = np.exp(-X ** 2 / 2); prior /= prior.sum()
 dx, dr = X[1] - X[0], R[1] - R[0]
 
+sech2 = lambda u: 1 / np.cosh(u) ** 2
+SLOPES = {                                           # exact f'(x)
+    "monotonic": lambda x: 0.5 * A / W * sech2(x / W),
+    "low-gain": lambda x: 0.25 * A / W * sech2(x / W),
+    "single-peaked": lambda x: -0.5 * A / W * np.where(x >= 0, 1.0, -1.0) * sech2(np.abs(x) / W),  # |slope| at the cusp: its limit
+}
 CURVES = {
     "monotonic": lambda x: 0.5 * A * (1 + np.tanh(x / W)),
     "low-gain": lambda x: 0.25 * A * (1 + np.tanh(x / W)),
@@ -61,7 +67,7 @@ def smooth(Jt, t):
 out = {"x": X.round(4).tolist(), "prior": (prior / dx).round(5).tolist(), "t": TS.tolist(), "curves": {}}
 for name, fn in CURVES.items():
     f = fn(X)
-    fp = np.gradient(f, X)
+    fp = SLOPES[name](X)
     J = fp ** 2 / SIGMA ** 2
     contrib = []                                      # t * E[J_t] (per unit log t), on X
     for t in TS:
@@ -73,14 +79,14 @@ for name, fn in CURVES.items():
     G = G + TS[0] * J
     mi = mi_direct(f)
     mi_G = 0.5 * np.sum(prior * G)
-    x0 = np.argmin(np.abs(X + 2.0))                   # reference stimulus x0 = -2
+    x0 = np.argmin(np.abs(X + 4.0))                   # reference stimulus x0 = -4 (left end of the axis)
     dFR = np.abs(np.cumsum(np.sqrt(J)) * dx - (np.cumsum(np.sqrt(J)) * dx)[x0])
     dG = np.abs(np.cumsum(np.sqrt(G)) * dx - (np.cumsum(np.sqrt(G)) * dx)[x0])
     out["curves"][name] = dict(f=f.round(5).tolist(), J=J.round(4).tolist(), G=G.round(4).tolist(),
                                contrib=contrib.round(5).tolist(), dFR=dFR.round(4).tolist(), dG=dG.round(4).tolist(),
                                mi_bits=mi / np.log(2), mi_from_G_bits=mi_G / np.log(2))
     print(f"{name:14s} MI direct {mi / np.log(2):.3f} bits, 1/2<G> {mi_G / np.log(2):.3f} bits")
-out.update(sigma=SIGMA, x0=-2.0)
+out.update(sigma=SIGMA, x0=-4.0)
 p = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "static", "data", "tuning.json")
 os.makedirs(os.path.dirname(p), exist_ok=True)
 json.dump(out, open(p, "w"), separators=(",", ":"))
