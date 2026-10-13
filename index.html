@@ -192,13 +192,15 @@
 <section id="explorer" class="section alt">
   <div class="wrap">
     <h2>Explore the eigenvectors</h2>
-    <p class="lead">Pick a held-out natural image. Rows: geometry, area and encoding model. Columns: the image and its four leading
-      eigenvectors (red and blue: opposite signs of the image change).</p>
+    <p class="lead">Pick a held-out natural image. Rows: geometry, area and encoding model. Columns: the image and the four leading
+      eigenvectors of the Inception model (red and blue: opposite signs of the image change). Each ResNet-50 tile shows the
+      ResNet-50 eigenvector most similar to the Inception one above it, with its rank and |cosine|, its sign flipped to match
+      (eigenvectors are defined up to a sign). The multi-scale eigenvectors of the two models agree; the Fisher ones do not.</p>
     <div class="explorer card">
       <div class="thumbs" id="x-thumbs"></div>
       <div class="xview">
         <div class="xcols"><span>image</span><span>1</span><span>2</span><span>3</span><span>4</span></div>
-        <div class="xbody"><div class="xrows" id="x-rows"></div><img id="x-sprite" alt="Eigenvectors of the selected image"></div>
+        <div class="xbody"><div class="xrows" id="x-rows"></div><div class="swrap"><img id="x-sprite" alt="Eigenvectors of the selected image"><div id="x-tags"></div></div></div>
       </div>
     </div>
   </div>

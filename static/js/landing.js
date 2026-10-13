@@ -99,9 +99,9 @@
       const pmax = Math.max(...D.prior);
       // tuning curves
       plot(document.getElementById("w-tuning"),
-        [{ x: D.x, y: D.prior.map((p) => (p / pmax) * 0.35 - 0.05), fill: css("--line") }]
+        [{ x: D.x, y: D.prior.map((p) => (p / pmax) * 0.3), fill: css("--line") }]
           .concat(names.map((n) => ({ x: D.x, y: D.curves[n].f, color: col[n], dash: dash[n] }))),
-        { xlim: [-4, 4], ylim: [-1.1, 1.1], xticks: xt, yticks: [-1, 0, 1], xlabel: "stimulus x" });
+        { xlim: [-4, 4], ylim: [-0.05, 1.1], xticks: xt, yticks: [0, 0.5, 1], xlabel: "stimulus x" });
       // information gained at scale t (multi-scale) or Fisher information (t -> 0)
       const ys = names.map((n) => (metric === "G" ? D.curves[n].contrib[ti] : D.curves[n].J));
       const ymax = metric === "G" ? Math.max(...names.flatMap((n) => D.curves[n].contrib.flat())) * 1.05
@@ -116,8 +116,9 @@
         names.map((n) => ({ x: D.x, y: D.curves[n][dk], color: col[n], dash: dash[n] })),
         { xlim: [-4, 4], ylim: [0, dmax], xticks: xt, yticks: [], xlabel: "stimulus x", vline: D.x0 });
       // MI bars: direct (bar) and 1/2 <G> (tick)
-      const c = document.getElementById("w-mi"), mmax = 2.2;
-      const P = plot(c, [], { xlim: [0, 3], ylim: [0, mmax], xticks: [], yticks: [0, 1, 2] });
+      const c = document.getElementById("w-mi");
+      const mmax = Math.ceil(Math.max(...names.map((n) => D.curves[n].mi_bits)) * 1.15 * 2) / 2;
+      const P = plot(c, [], { xlim: [0, 3], ylim: [0, mmax], xticks: [], yticks: [0, 1, 2, 3].filter((v) => v <= mmax) });
       names.forEach((n, i) => {
         const mi = D.curves[n].mi_bits, mg = D.curves[n].mi_from_G_bits;
         P.g.fillStyle = col[n]; P.g.fillRect(P.X(i + 0.25), P.Y(mi), P.X(i + 0.75) - P.X(i + 0.25), P.Y(0) - P.Y(mi));
@@ -150,8 +151,23 @@
     rows.style.gridTemplateRows = E.rows.map((_, i) => `${E.tile}fr` + (i < n - 1 ? ` ${E.pad}fr` : "")).join(" ");
     rows.innerHTML = E.rows.map((r, i) => `<div class="${i === n / 2 ? "sep" : ""}">${met[r.metric]} · ${r.area} · ${enc[r.encoder]}</div>` +
       (i < n - 1 ? "<span></span>" : "")).join("");
+    const tags = document.getElementById("x-tags");
+    const W = (E.k + 1) * (E.tile + E.pad) - E.pad, H = n * (E.tile + E.pad) - E.pad;
     function select(idx, el) {
       sprite.src = `static/img/explorer/img${String(idx).padStart(4, "0")}.png`;
+      tags.innerHTML = "";
+      E.rows.forEach((row, r) => {
+        if (row.encoder === "inception") return;
+        const m = E.matches[String(idx)][r];
+        for (let k = 0; k < E.k; k++) {
+          const t = document.createElement("span");
+          t.className = "xtag" + (m.cos[k] < 0.5 ? " weak" : "");
+          t.textContent = `#${m.ranks[k]} · ${m.cos[k].toFixed(2)}`;
+          t.style.left = (100 * ((k + 1) * (E.tile + E.pad) + E.tile - 2)) / W + "%";
+          t.style.top = (100 * (r * (E.tile + E.pad) + E.tile - 2)) / H + "%";
+          tags.appendChild(t);
+        }
+      });
       thumbs.querySelectorAll("img").forEach((x) => x.classList.toggle("on", x === el));
     }
     E.images.forEach((idx, i) => {

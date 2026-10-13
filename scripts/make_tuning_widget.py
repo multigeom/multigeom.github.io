@@ -1,9 +1,10 @@
 """Data for the landing page's 1-D widget: one neuron, scalar stimulus x ~ N(0, 1), response r = f(x) + noise.
 
-Three tuning curves with the same slope magnitude for two of them (Fig. 1 of the paper's companion work):
-  monotonic        f(x) = A tanh(x / w)
-  low-gain         f(x) = (A / 2) tanh(x / w)
-  single-peaked    f(x) = A (1 - tanh(|x| / w))      (|f'| equals that of the monotonic curve everywhere)
+Three tuning curves, all non-negative firing rates (Fig. 1 of the paper's companion work):
+  monotonic        f(x) = (A / 2) (1 + tanh(x / w))        rate 0 .. A
+  low-gain         f(x) = (A / 4) (1 + tanh(x / w))        rate 0 .. A/2
+  single-peaked    f(x) = (A / 2) (1 - tanh(|x| / w))      rate 0 .. A/2, peak at x = 0
+The monotonic and single-peaked curves have the same slope magnitude |f'(x)| everywhere.
 For each: Fisher information J(x) = f'(x)^2 / sigma^2; blurred-stimulus Fisher J_t(x_t) of
 p_t(r | x_t) = int N(r; f(x), sigma^2) p(x | x_t) dx, computed on grids; multi-scale Fisher
 G(x) = int_0^inf E_{x_t ~ N(x, t)}[J_t(x_t)] dt; distances from a reference stimulus; and the mutual information,
@@ -15,18 +16,18 @@ import os
 
 import numpy as np
 
-A, W, SIGMA = 1.0, 0.6, 0.15
+A, W, SIGMA = 1.0, 0.6, 0.08
 X = np.linspace(-4, 4, 321)                         # stimulus grid (also x_t grid core)
 XT = np.linspace(-9, 9, 721)                         # x_t grid
-R = np.linspace(-1.2, 2.2, 700)                      # response grid
+R = np.linspace(-0.6, 1.6, 700)                      # response grid
 TS = np.logspace(-4, 2.3, 64)                         # blur scales t
 prior = np.exp(-X ** 2 / 2); prior /= prior.sum()
 dx, dr = X[1] - X[0], R[1] - R[0]
 
 CURVES = {
-    "monotonic": lambda x: A * np.tanh(x / W),
-    "low-gain": lambda x: 0.5 * A * np.tanh(x / W),
-    "single-peaked": lambda x: A * (1 - np.tanh(np.abs(x) / W)),
+    "monotonic": lambda x: 0.5 * A * (1 + np.tanh(x / W)),
+    "low-gain": lambda x: 0.25 * A * (1 + np.tanh(x / W)),
+    "single-peaked": lambda x: 0.5 * A * (1 - np.tanh(np.abs(x) / W)),
 }
 
 
