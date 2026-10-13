@@ -146,9 +146,11 @@
     <pre><code>pip install multigeom</code></pre>
     <pre><code>import multigeom
 
-encoder = multigeom.load_encoder("inception", area="V1")        # an encoder of the paper, fitted to macaque V1
-responses = encoder.predict(images)                               # predicted neural responses
-fisher = multigeom.compute_fisher(image=x, encoder=encoder, sigma=0.22, top_k=10)   # its Fisher information J(x)</code></pre>
+encoder = multigeom.load_encoder("inception", area="V1")   # an encoder of the paper, fitted to macaque V1
+responses = encoder.predict(images)                          # [N, 50] predicted neural responses, images [N, 1, 64, 64]
+
+# The Fisher information J(x) of the encoder at an image x:
+fisher = multigeom.compute_fisher(image=x, encoder=encoder, sigma=0.22, top_k=10)</code></pre>
     <p>The demo notebooks go from the first call to the figures of the paper.</p>
     <div class="cards">
       <div class="card-nb"><h3>0. Use a fitted encoder</h3><p>Load an encoder of the paper, predict neural responses, compute J(x).</p></div>
