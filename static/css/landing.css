@@ -154,9 +154,6 @@ details summary { cursor: pointer; font-weight: 600; }
 .xrows div.sep { border-top: 1px dashed var(--line); }
 #x-sprite { width: 100%; image-rendering: pixelated; display: block; }
 .swrap { position: relative; }
-.xtag { position: absolute; transform: translate(-100%, -100%); font: 600 10px/1 Inter, sans-serif; color: #1d1d1f;
-  background: rgba(255,255,255,.85); padding: 2px 4px; border-radius: 4px; white-space: nowrap; pointer-events: none; }
-.xtag.weak { color: #a3261b; }
 
 /* code */
 pre.code, .bib pre { background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px;

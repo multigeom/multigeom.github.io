@@ -151,23 +151,9 @@
     rows.style.gridTemplateRows = E.rows.map((_, i) => `${E.tile}fr` + (i < n - 1 ? ` ${E.pad}fr` : "")).join(" ");
     rows.innerHTML = E.rows.map((r, i) => `<div class="${i === n / 2 ? "sep" : ""}">${met[r.metric]} · ${r.area} · ${enc[r.encoder]}</div>` +
       (i < n - 1 ? "<span></span>" : "")).join("");
-    const tags = document.getElementById("x-tags");
-    const W = (E.k + 1) * (E.tile + E.pad) - E.pad, H = n * (E.tile + E.pad) - E.pad;
     function select(idx, el) {
       sprite.src = `static/img/explorer/img${String(idx).padStart(4, "0")}.png`;
-      tags.innerHTML = "";
-      E.rows.forEach((row, r) => {
-        if (row.encoder === "inception") return;
-        const m = E.matches[String(idx)][r];
-        for (let k = 0; k < E.k; k++) {
-          const t = document.createElement("span");
-          t.className = "xtag" + (m.cos[k] < 0.5 ? " weak" : "");
-          t.textContent = `#${m.ranks[k]} · ${m.cos[k].toFixed(2)}`;
-          t.style.left = (100 * ((k + 1) * (E.tile + E.pad) + E.tile - 2)) / W + "%";
-          t.style.top = (100 * (r * (E.tile + E.pad) + E.tile - 2)) / H + "%";
-          tags.appendChild(t);
-        }
-      });
+
       thumbs.querySelectorAll("img").forEach((x) => x.classList.toggle("on", x === el));
     }
     E.images.forEach((idx, i) => {
