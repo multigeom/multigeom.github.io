@@ -1,0 +1,21 @@
+name: check
+
+# The landing page is static. On every pull request and every push to develop or main, check that every page has a title and that
+# every local file or link it refers to exists (scripts/check_site.py).
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Local files and links exist
+        run: python scripts/check_site.py
