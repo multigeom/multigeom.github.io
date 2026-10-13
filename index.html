@@ -13,6 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="static/css/landing.css">
+  <script>try { const m = localStorage.getItem("theme"); if (m) document.documentElement.dataset.theme = m; } catch (e) {}</script>
   <script>
     window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }, svg: { fontCache: 'global' } };
   </script>
@@ -24,12 +25,15 @@
 <nav class="topnav">
   <div class="wrap nav-inner">
     <a class="brand" href="#top">multigeom</a>
-    <div class="nav-links">
-      <a href="#idea">Idea</a>
-      <a href="#results">Results</a>
-      <a href="#explorer">Explorer</a>
-      <a href="#code">Code</a>
-      <a href="#cite">Cite</a>
+    <div class="nav-right">
+      <div class="nav-links">
+        <a href="#idea">Idea</a>
+        <a href="#results">Results</a>
+        <a href="#explorer">Explorer</a>
+        <a href="#code">Code</a>
+        <a href="#cite">Cite</a>
+      </div>
+      <button class="theme" id="theme" aria-label="Switch between light and dark">◐ Dark</button>
     </div>
   </div>
 </nav>
@@ -155,31 +159,31 @@
     <h2>Results</h2>
     <div class="rcard">
       <div class="rtext"><h3>Different features in V1 and V4</h3>
-        <p>The leading eigenvectors of $G(x)$ are image structure: finer in V1, coarser and following object shape in V4. Those of
+        <p>The leading eigenvectors of $G(x)$ are changes that natural images contain: first a change of brightness over the
+          receptive fields, then edges and fine detail in V1, and coarser changes that follow the object's shape in V4. Those of
           the Fisher information are pixel noise in both areas.</p></div>
-      <img src="docs/assets/images/fig3_def.png" alt="Example image with V1 and V4 receptive fields and the leading eigenvectors of G(x) and J(x)" loading="lazy">
+      <img src="docs/assets/images/cfg200/fig3_def.png" alt="Example image with V1 and V4 receptive fields and the leading four eigenvectors of G(x) and J(x)" loading="lazy">
     </div>
     <div class="rcard">
       <div class="rtext"><h3>Constrained by the data, not by the model</h3>
         <p>Two encoding models fitted to the same area agree on $G(x)$ more than one model fitted to the two areas. For the Fisher
-          information the ordering reverses: it reflects the model more than the recorded area.</p></div>
-      <img src="docs/assets/images/fig4_de.png" alt="Subspace alignment of the top-k eigenvectors of G(x) and J(x)" loading="lazy">
+          information the ordering reverses: it reflects the model more than the recorded area. (Subspace alignment of the top
+          $k$ eigenvectors, averaged over 200 held-out images.)</p></div>
+      <img src="docs/assets/images/cfg200/fig4_de.png" alt="Subspace alignment of the top-k eigenvectors of G(x) and J(x) against k" loading="lazy">
     </div>
     <div class="rcard">
       <div class="rtext"><h3>The same at every point of the field</h3>
-        <p>Around a reference image, the multi-scale metric of the two models stays close everywhere; the Fisher metric does not.</p></div>
-      <video autoplay loop muted playsinline preload="metadata" poster="docs/assets/videos/metric_field_poster.png"
-             aria-label="Metric ellipses of two encoding models on a grid of perturbed images">
-        <source src="docs/assets/videos/metric_field.mp4" type="video/mp4">
-      </video>
+        <p>Around a reference image, perturbed along the two leading eigenvectors of $G(x)$, the multi-scale metric of the two
+          models (Inception solid, ResNet-50 dashed) stays close everywhere; the Fisher metric does not.</p></div>
+      <img src="docs/assets/images/cfg200/fig5.png" alt="Metric ellipses of G(x) and J(x) for two encoding models on a grid of perturbed images" loading="lazy">
     </div>
     <details class="more"><summary>More figures</summary>
-      <figure><img src="docs/assets/images/fig4_bc.png" alt="Leading eigenvectors for each architecture" loading="lazy">
-        <figcaption>Leading eigenvectors of $G(x)$ and $J(x)$ for each model architecture fitted to V1 and V4.</figcaption></figure>
-      <figure><img src="docs/assets/images/fig5.png" alt="Local metric field" loading="lazy">
-        <figcaption>Local metric field: both models' metrics projected on the two leading eigenvectors of $G(x)$.</figcaption></figure>
-      <figure><img src="docs/assets/images/fig6.png" alt="Bures-Wasserstein distance" loading="lazy">
-        <figcaption>The same conclusion with another distance (Bures–Wasserstein).</figcaption></figure>
+      <figure><img src="docs/assets/images/cfg200/fig4_bc.png" alt="Leading eigenvectors for each encoding model fitted to V1 and V4" loading="lazy">
+        <figcaption>Leading eigenvectors of $G(x)$ and $J(x)$ for each encoding model (Inception, ResNet-50, ON-OFF) fitted to
+          V1 and V4.</figcaption></figure>
+      <figure><img src="docs/assets/images/cfg200/fig_app_bw.png" alt="Bures-Wasserstein distance between geometries against k" loading="lazy">
+        <figcaption>The same comparison with another distance: Bures–Wasserstein distance between the reconstructed geometries,
+          averaged over 200 held-out images.</figcaption></figure>
     </details>
   </div>
 </section>

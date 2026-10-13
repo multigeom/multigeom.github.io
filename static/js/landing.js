@@ -83,15 +83,17 @@
   async function widget() {
     const D = await (await fetch("static/data/tuning.json")).json();
     const names = ["monotonic", "low-gain", "single-peaked"];
-    const col = { "monotonic": css("--c-mono"), "low-gain": css("--c-low"), "single-peaked": css("--c-peak") };
+    let col = {};
     const dash = { "monotonic": [], "low-gain": [], "single-peaked": [6, 4] };
     const slider = document.getElementById("w-t"), tval = document.getElementById("w-t-val"), note = document.getElementById("w-note");
     let metric = "G";
-    document.getElementById("w-legend").innerHTML = names.map((n) =>
-      `<span><i style="background:${col[n]}"></i>${n}</span>`).join("") +
-      `<span><i style="background:${css("--line")}"></i>stimulus distribution</span>`;
+
     const xt = [-4, -2, 0, 2, 4];
     function draw() {
+      col = { "monotonic": css("--c-mono"), "low-gain": css("--c-low"), "single-peaked": css("--c-peak") };
+      document.getElementById("w-legend").innerHTML = names.map((n) =>
+        `<span><i style="background:${col[n]}"></i>${n}</span>`).join("") +
+        `<span><i style="background:${css("--line")}"></i>stimulus distribution</span>`;
       const ti = +slider.value, t = D.t[ti];
       tval.textContent = "t = " + (t < 0.01 ? t.toExponential(1) : t.toPrecision(2));
       const pmax = Math.max(...D.prior);
@@ -164,6 +166,20 @@
     void tot;
   }
 
+  /* ------------------------------------------------------------------ light / dark switch */
+  function theme() {
+    const b = document.getElementById("theme"), root = document.documentElement;
+    const isDark = () => root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    const label = () => (b.textContent = isDark() ? "◐ Light" : "◐ Dark");
+    b.addEventListener("click", () => {
+      root.dataset.theme = isDark() ? "light" : "dark";
+      try { localStorage.setItem("theme", root.dataset.theme); } catch (e) {}
+      label(); window.dispatchEvent(new Event("resize"));          // canvases redraw with the new colours
+    });
+    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { label(); window.dispatchEvent(new Event("resize")); });
+    label();
+  }
+
   /* ------------------------------------------------------------------ copy BibTeX */
   function bib() {
     const b = document.getElementById("copy-bib");
@@ -175,6 +191,6 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    teaser().catch(console.error); widget().catch(console.error); explorer().catch(console.error); bib();
+    teaser().catch(console.error); widget().catch(console.error); explorer().catch(console.error); bib(); theme();
   });
 })();
