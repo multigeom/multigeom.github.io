@@ -8,16 +8,37 @@
   /* ------------------------------------------------------------------ teaser */
   async function teaser() {
     const T = await (await fetch("static/data/teaser.json")).json();
-    const x0 = Array.from(b64(T.image), (u) => u / 127.5 - 1);
+    const KEYS = ["G_V1", "G_V4", "J_V1", "J_V4"];
     const vec = (o) => { const q = new Int8Array(b64(o.b64).buffer); return Array.from(q, (v) => (v / 127) * o.scale); };
-    const V = {};
-    for (const key of ["G_V1", "G_V4", "J_V1", "J_V4"]) V[key] = T[key].map(vec);
+    const decode = (D) => {
+      const out = { x0: Array.from(b64(D.image), (u) => u / 127.5 - 1), V: {} };
+      for (const key of KEYS) out.V[key] = D[key].map(vec);
+      return out;
+    };
+    // image 0 is the frog of teaser.json; the others are static/data/teaser_img<idx>.json, loaded on demand
+    const files = [null, ...(T.cycle || []).map((i) => `static/data/teaser_img${String(i).padStart(4, "0")}.json`)];
+    const cache = [decode(T)];
+    let cur = 0, x0 = cache[0].x0, V = cache[0].V;
     const amp = document.getElementById("t-amp"), play = document.getElementById("t-play");
     let k = 0, playing = true, phase = 0;
     const ctx = {};
-    for (const key in V) {
-      const c = document.getElementById("t-" + key.replace("_", "-"));
-      ctx[key] = c.getContext("2d");
+    for (const key of KEYS) ctx[key] = document.getElementById("t-" + key.replace("_", "-")).getContext("2d");
+    const nav = document.getElementById("t-img-nav"), count = document.getElementById("t-img-count");
+    const note = document.getElementById("t-note"), frogNote = note.textContent;
+    const otherNote = "The leading eigenvectors of the multi-scale metric change the image in smooth, spatially coherent ways. " +
+      "Those of the Fisher information add high-frequency noise, which natural images rarely contain.";
+    async function show(i) {
+      cur = (i + files.length) % files.length;
+      if (!cache[cur]) cache[cur] = decode(await (await fetch(files[cur])).json());
+      ({ x0, V } = cache[cur]);
+      count.textContent = `Image ${cur + 1} of ${files.length}`;
+      note.textContent = cur === 0 ? frogNote : otherNote;
+      draw();
+    }
+    if (files.length > 1) {
+      nav.hidden = false; count.textContent = `Image 1 of ${files.length}`;
+      document.getElementById("t-prev").addEventListener("click", () => show(cur - 1).catch(console.error));
+      document.getElementById("t-next").addEventListener("click", () => show(cur + 1).catch(console.error));
     }
     function draw() {
       const s = amp.value / 100;

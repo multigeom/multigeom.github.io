@@ -79,11 +79,19 @@
       <div class="controls">
         <button id="t-play" class="chip" aria-label="Play or pause">❚❚</button>
         <input id="t-amp" type="range" min="-100" max="100" value="0" aria-label="Step along the eigenvector">
-        <div class="seg" id="t-k" role="group" aria-label="Eigenvector">
-          <button data-k="0" class="on">1</button><button data-k="1">2</button><button data-k="2">3</button><button data-k="3">4</button>
+        <div class="seg-wrap">
+          <div class="tlabel">eigenvector</div>
+          <div class="seg" id="t-k" role="group" aria-label="Eigenvector">
+            <button data-k="0" class="on">1</button><button data-k="1">2</button><button data-k="2">3</button><button data-k="3">4</button>
+          </div>
         </div>
       </div>
-      <p class="demo-note">The leading eigenvectors of the multi-scale metric change the image in ways natural images vary: local
+      <div class="img-nav" id="t-img-nav" hidden>
+        <button id="t-prev" class="chip" aria-label="Previous image">◂</button>
+        <span id="t-img-count">Image 1 of 1</span>
+        <button id="t-next" class="chip" aria-label="Next image">▸</button>
+      </div>
+      <p class="demo-note" id="t-note">The leading eigenvectors of the multi-scale metric change the image in ways natural images vary: local
         brightness over the receptive fields, then edges and the outline of the eye. Those of the Fisher information add
         high-frequency noise, which natural images rarely contain.</p>
     </div>
@@ -94,14 +102,13 @@
 <section class="tldr">
   <div class="wrap three">
     <div><h3>Exact link to information</h3><p>Averaged over stimuli, half the trace of the metric equals the mutual information:
-      $I(R;X) = \tfrac12\langle \operatorname{tr} G(x)\rangle$. The Fisher information gives the mutual information only
-      approximately, for large populations or low noise.</p></div>
-    <div><h3>Unique from first principles</h3><p>Coarse-grain the stimulus by adding Gaussian noise. Up to a constant factor, this
+      $I(R;X) = \tfrac12\langle \operatorname{tr} G(x)\rangle$.</p></div>
+    <div><h3>Derived from first principles</h3><p>The metric follows from how the geometry changes for an observer who sees only a blurred version of the stimulus. Coarse-grain the stimulus by adding Gaussian noise. Up to a constant factor, this
       is the only metric that contracts at a rate set by the local response distribution and by what the responses encode.
       It is also zero when the responses carry no information about the stimulus.</p></div>
     <div><h3>Practical for natural images</h3><p>A conditional diffusion model gives Monte Carlo estimates of the metric's leading
-      eigenvectors for 64&times;64-pixel images. In V1 and V4 they agree across encoding models fitted to the same area; those
-      of the Fisher information do not.</p></div>
+      eigenvectors for 64&times;64-pixel images. In V1 and V4 they are robust to differences in the encoding model fitted to the
+      same area; those of the Fisher information are not.</p></div>
   </div>
 </section>
 
