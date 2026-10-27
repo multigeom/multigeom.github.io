@@ -79,11 +79,19 @@
       <div class="controls">
         <button id="t-play" class="chip" aria-label="Play or pause">❚❚</button>
         <input id="t-amp" type="range" min="-100" max="100" value="0" aria-label="Step along the eigenvector">
-        <div class="seg" id="t-k" role="group" aria-label="Eigenvector">
-          <button data-k="0" class="on">1</button><button data-k="1">2</button><button data-k="2">3</button><button data-k="3">4</button>
+        <div class="seg-wrap">
+          <div class="tlabel">eigenvector</div>
+          <div class="seg" id="t-k" role="group" aria-label="Eigenvector">
+            <button data-k="0" class="on">1</button><button data-k="1">2</button><button data-k="2">3</button><button data-k="3">4</button>
+          </div>
         </div>
       </div>
-      <p class="demo-note">The leading eigenvectors of the multi-scale metric change the image in ways natural images vary: local
+      <div class="img-nav" id="t-img-nav" hidden>
+        <button id="t-prev" class="chip" aria-label="Previous image">◂</button>
+        <span id="t-img-count">Image 1 of 1</span>
+        <button id="t-next" class="chip" aria-label="Next image">▸</button>
+      </div>
+      <p class="demo-note" id="t-note">The leading eigenvectors of the multi-scale metric change the image in ways natural images vary: local
         brightness over the receptive fields, then edges and the outline of the eye. Those of the Fisher information add
         high-frequency noise, which natural images rarely contain.</p>
     </div>
@@ -94,14 +102,13 @@
 <section class="tldr">
   <div class="wrap three">
     <div><h3>Exact link to information</h3><p>Averaged over stimuli, half the trace of the metric equals the mutual information:
-      $I(R;X) = \tfrac12\langle \operatorname{tr} G(x)\rangle$. The Fisher information gives the mutual information only
-      approximately, for large populations or low noise.</p></div>
-    <div><h3>Unique from first principles</h3><p>Coarse-grain the stimulus by adding Gaussian noise. Up to a constant factor, this
+      $I(R;X) = \tfrac12\langle \operatorname{tr} G(x)\rangle$.</p></div>
+    <div><h3>Derived from first principles</h3><p>The metric follows from how the geometry changes for an observer who sees only a blurred version of the stimulus. Coarse-grain the stimulus by adding Gaussian noise. Up to a constant factor, this
       is the only metric that contracts at a rate set by the local response distribution and by what the responses encode.
       It is also zero when the responses carry no information about the stimulus.</p></div>
     <div><h3>Practical for natural images</h3><p>A conditional diffusion model gives Monte Carlo estimates of the metric's leading
-      eigenvectors for 64&times;64-pixel images. In V1 and V4 they agree across encoding models fitted to the same area; those
-      of the Fisher information do not.</p></div>
+      eigenvectors for 64&times;64-pixel images. In V1 and V4 they are robust to differences in the encoding model fitted to the
+      same area; those of the Fisher information are not.</p></div>
   </div>
 </section>
 
@@ -111,13 +118,14 @@
     <h2>The idea in one neuron</h2>
     <p class="lead">The Fisher information measures how well a code separates <em>nearby</em> stimuli. Mutual information also depends
       on how well it separates stimuli that are <em>far apart</em>. Three model neurons show the difference. Each encodes a scalar
-      stimulus with a Gaussian distribution, through one tuning curve with the same Gaussian response noise.</p>
+      stimulus, uniformly distributed between $-4$ and $4$, through one tuning curve with the same Gaussian response noise.</p>
     <div class="widget card">
       <div class="wgrid">
         <figure class="wfig"><figcaption>Tuning curves $f(x)$, noise $\sigma$</figcaption><canvas id="w-tuning" class="plot"></canvas></figure>
-        <figure class="wfig"><figcaption>Contribution of scale $t$ to $G(x)$, per unit $\log t$</figcaption><canvas id="w-contrib" class="plot"></canvas></figure>
-        <figure class="wfig"><figcaption>Distance from $x_0=-4$</figcaption><canvas id="w-dist" class="plot"></canvas></figure>
-        <figure class="wfig"><figcaption>Mutual information (bits) and $\tfrac12\langle G\rangle$</figcaption><canvas id="w-mi" class="plot"></canvas></figure>
+        <figure class="wfig"><figcaption id="w-cap-contrib">G(x) up to scale t, divided by t</figcaption><canvas id="w-contrib" class="plot"></canvas></figure>
+        <figure class="wfig"><figcaption id="w-cap-dist">Distance from x₀ = −4</figcaption>
+          <canvas id="w-dist" class="plot"></canvas></figure>
+        <figure class="wfig"><figcaption id="w-cap-mi">Mutual information (bits) and ½⟨G⟩</figcaption><canvas id="w-mi" class="plot"></canvas></figure>
       </div>
       <div class="controls wide">
         <label for="w-t">coarse-graining scale $t$</label>
@@ -130,9 +138,9 @@
       <p class="demo-note" id="w-note"></p>
       <div class="legend" id="w-legend"></div>
     </div>
-    <p>The monotonic and single-peaked neurons have the same slope magnitude $|f'(x)|$ at every stimulus, so their Fisher
-      information $J(x)=f'(x)^2/\sigma^2$ and their Fisher distances are identical. Yet the single-peaked neuron responds in the
-      same way to stimuli on either side of its peak, so it carries less mutual information. The low-gain neuron has a quarter of
+    <p>The monotonic and single-peaked neurons have the same slope magnitude $|f'(x)|$ at every stimulus (<b class="pref" data-panel="w-tuning" tabindex="0">Tuning curves</b> panel), so their Fisher
+      information $J(x)=f'(x)^2/\sigma^2$ and their Fisher distances (<b class="pref" data-panel="w-dist" tabindex="0">Distance</b> panel) are identical. Yet the single-peaked neuron responds in the
+      same way to stimuli on either side of its peak, so it carries less mutual information (<b class="pref" data-panel="w-mi" tabindex="0">Mutual information</b> panel). The low-gain neuron has a quarter of
       the monotonic neuron's Fisher information everywhere, the least of the three, but it carries more mutual information than
       the single-peaked one.</p>
     <p>The multi-scale metric captures both orderings. It coarse-grains the stimulus by adding Gaussian noise of variance $t$,
@@ -141,8 +149,12 @@
       $$G(x)=\int_0^\infty \big\langle J_t(x_t)\big\rangle_{x_t\sim\mathcal N(x,\,t)}\,dt .$$
       For $t>0$, $J_t$ depends on the responses to neighbouring stimuli within about $\sqrt t$ and on the stimulus distribution,
       so $G$ reflects global as well as local structure. Distances under $G$ rank the three neurons as their mutual information
-      does. The identity $I(R;X)=\tfrac12\langle G(x)\rangle_{p(x)}$ also holds numerically: the bars show the mutual information
+      does. The identity $I(R;X)=\tfrac12\langle G(x)\rangle_{p(x)}$ also holds numerically: in the <b class="pref" data-panel="w-mi" tabindex="0">Mutual information</b> panel the bars show the mutual information
       and the black ticks $\tfrac12\langle G\rangle$.</p>
+    <p>The <b class="pref" data-panel="w-dist" tabindex="0">Distance</b> panel is the arc length from $x_0=-4$ to $x$ under a metric $g$:
+      $$d(x_0,x)=\int_{x_0}^{x}\sqrt{g(u)}\,du,\qquad
+      g(u)=\begin{cases}J(u)=f'(u)^2/\sigma^2 & \text{Fisher view},\\[2pt]
+      \displaystyle\int_0^{t}\big\langle J_s(x_s)\big\rangle_{x_s\sim\mathcal N(u,\,s)}\,ds & \text{multi-scale view, up to the scale } t \text{ of the slider}.\end{cases}$$</p>
   </div>
 </section>
 

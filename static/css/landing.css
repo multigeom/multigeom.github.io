@@ -101,6 +101,11 @@ code, pre, .mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-
 .controls input[type=range] { flex: 1; accent-color: var(--accent); min-width: 120px; }
 .chip { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 8px; padding: 4px 10px;
   cursor: pointer; font: inherit; font-size: .85rem; }
+.img-nav { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 12px; font-size: .85rem; color: var(--muted); }
+.img-nav[hidden] { display: none; }
+#w-metric { margin-left: auto; }
+.seg-wrap { display: flex; flex-direction: column; align-items: center; }
+.seg-wrap .tlabel { margin-bottom: 2px; }
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
 .seg button { border: 0; background: var(--card); color: var(--muted); padding: 4px 10px; cursor: pointer; font: inherit;
   font-size: .85rem; }
@@ -121,9 +126,13 @@ code, pre, .mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-
 
 /* widget */
 .widget { padding: 18px; margin: 18px 0 22px; }
-.wgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.wgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; align-items: start; }
 .wfig { margin: 0; }
-.wfig figcaption { font-size: .82rem; color: var(--muted); margin-bottom: 4px; }
+.wfig { border-radius: 8px; }
+.wfig.hl { outline: 2px solid var(--accent); outline-offset: 5px; }
+.pref { font-weight: 700; color: var(--accent); cursor: help; border-bottom: 1px dotted var(--accent); }
+.pref:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+.wfig figcaption { font-size: .8rem; color: var(--muted); margin-bottom: 4px; min-height: 2.4em; }
 canvas.plot { width: 100%; aspect-ratio: 1.15; display: block; }
 .legend { display: flex; gap: 18px; flex-wrap: wrap; font-size: .85rem; color: var(--muted); margin-top: 8px; }
 .legend i { display: inline-block; width: 18px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
