@@ -2,7 +2,7 @@
 
 Estimates G(x) and J(x) of the frog of paper Fig. 3D (first TinyImageNet training image of class n01644900) for the
 Inception model of V1 and V4, as in notebook 3 of multigeom-tutorials, and rewrites the image and the leading 4
-eigenvectors of G(x) and J(x) in static/data/teaser.json (the "cycle" list is kept). Needs multigeom, a GPU, and the
+eigenvectors of G(x) (from the second, see FIRST in make_eigvec_assets.py) and J(x) in static/data/teaser.json (the "cycle" list is kept). Needs multigeom, a GPU, and the
 checkpoints and TinyImageNet in the multigeom-tutorials folder:
 
     python make_teaser_frog.py --tutorials <multigeom-tutorials> --out <site root>
@@ -17,7 +17,7 @@ import numpy as np
 import torch
 from PIL import Image
 
-from make_eigvec_assets import K, q8
+from make_eigvec_assets import FIRST, K, q8
 
 IMG = "data/tiny-imagenet-200/train/n01644900/images/n01644900_0.JPEG"
 ENC = "inception"
@@ -62,7 +62,7 @@ def main():
                       generator=make_generator(int(cfg.seed), device))
         j = compute_fisher(image=x, encoder=encoder, sigma=sigma, top_k=int(cfg.fisher_baseline.top_k), device=device)
         for m, r in (("G", g), ("J", j)):
-            V = r.eigenvectors.cpu().numpy().astype(np.float64)[:K]
+            V = r.eigenvectors.cpu().numpy().astype(np.float64)[FIRST[m]:FIRST[m] + K]
             V = V * np.sign(V.sum(1, keepdims=True) + 1e-12)          # display sign: positive mean
             T[f"{m}_{area}"] = [dict(zip(("b64", "scale"), q8(v))) for v in V]
         print(area, "done")
