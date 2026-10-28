@@ -197,7 +197,7 @@
       <div class="rtext"><h3>Robust to the choice of encoding model</h3>
         <p>Two encoding models fitted to the same area agree on the leading eigenvectors of $G(x)$ more than one model fitted to
           the two areas. For the Fisher information the ordering reverses, so its leading eigenvectors depend more on the
-          encoding model than on the recorded area. (Subspace alignment of the top $k$ eigenvectors, $k=2$ to 50, averaged over
+          encoding model than on the recorded area. (Subspace alignment of the top $k$ eigenvectors averaged over
           200 held-out images.)</p></div>
       <img src="docs/assets/images/cfg200/fig4_de.png" alt="Subspace alignment of the top-k eigenvectors of G(x) and J(x) against k" loading="lazy">
     </div>
@@ -227,11 +227,7 @@
   <div class="wrap">
     <h2>Explore the eigenvectors</h2>
     <p class="lead">Pick a held-out natural image. Rows: geometry, area and encoding model. Columns: the image and the four leading
-      eigenvectors of the Inception model (red and blue: opposite signs of the image change). For the multi-scale metric
-      the first eigenvector, a broad brightness change over the receptive fields, is left out, as in the paper's figures.
-      Each ResNet-50 tile shows the
-      ResNet-50 eigenvector (among its top 20) most similar to the Inception one above it, with its sign flipped to match
-      (eigenvectors are defined up to a sign). For the multi-scale metric the two rows of each area look alike, for the Fisher
+      eigenvectors of the Inception or ResNet model (red and blue: opposite signs of the image change). For the multi-scale metric the two rows of each area look alike, for the Fisher
       information they differ.</p>
     <div class="explorer card">
       <div class="thumbs" id="x-thumbs"></div>
@@ -300,9 +296,8 @@ fisher = multigeom.compute_fisher(image=x, encoder=encoder, sigma=0.22, top_k=10
 </section>
 
 <footer class="foot">
-  <div class="wrap">Code released under the MIT license. The one-neuron widget is computed numerically from the model in
-    <code>scripts/make_tuning_widget.py</code>; the eigenvector demos use the paper's encoding and diffusion models (see
-    <code>scripts/</code> in this repository).</div>
+  <div class="wrap">Code released under the MIT license. The paper and its figures are released under
+    <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</div>
 </footer>
 
 </body>
