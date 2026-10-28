@@ -58,6 +58,7 @@ h1 { font-size: clamp(1.7rem, 3.2vw, 2.5rem); letter-spacing: -.01em; }
 h2 { font-size: clamp(1.4rem, 2.4vw, 1.9rem); }
 h3 { font-size: 1.15rem; }
 p { margin: 0 0 1em; }
+.nowrap { white-space: nowrap; }
 code, pre, .mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: .88em; }
 .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
 
@@ -167,11 +168,12 @@ details summary { cursor: pointer; font-weight: 600; }
 /* code */
 pre.code, .bib pre { background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px;
   overflow-x: auto; margin: 0 0 12px; }
-.nbcards { display: grid; gap: 10px; align-content: center; }
-.nb { display: flex; gap: 14px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 10px;
-  padding: 12px 14px; color: var(--ink); }
+.nbintro { margin-top: 20px; }
+.nbcards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.nb { display: flex; flex-direction: column; gap: 6px; background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+  padding: 14px 16px; color: var(--ink); font-size: .93rem; line-height: 1.45; }
 .nb:hover { border-color: var(--accent); text-decoration: none; }
-.nb b { font-family: "JetBrains Mono", monospace; color: var(--accent); min-width: 34px; }
+.nb b { font-family: "JetBrains Mono", monospace; color: var(--accent); font-size: 1.1rem; }
 
 /* cite */
 details.abstract { max-width: 880px; margin-bottom: 30px; }
@@ -187,6 +189,7 @@ details.abstract p { color: var(--muted); margin-top: 12px; }
   .wgrid { grid-template-columns: 1fr 1fr; }
   .nav-links a { margin-left: 12px; }
   .thumbs { grid-template-columns: repeat(6, 1fr); }
+  .nbcards { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 520px) {
   .nav-links { display: none; }
@@ -194,4 +197,5 @@ details.abstract p { color: var(--muted); margin-top: 12px; }
   .wgrid { grid-template-columns: 1fr; }
   .xcols, .xbody { grid-template-columns: 96px 1fr; }
   .thumbs { grid-template-columns: repeat(4, 1fr); }
+  .nbcards { grid-template-columns: 1fr; }
 }

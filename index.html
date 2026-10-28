@@ -91,8 +91,7 @@
         <span id="t-img-count">Image 1 of 1</span>
         <button id="t-next" class="chip" aria-label="Next image">▸</button>
       </div>
-      <p class="demo-note" id="t-note">The leading eigenvectors of the multi-scale metric change the image in ways natural images vary: local
-        brightness over the receptive fields, then edges and the outline of the eye. Those of the Fisher information add
+      <p class="demo-note" id="t-note">The leading eigenvectors of the multi-scale metric change the image the way natural images vary. Those of the Fisher information add
         high-frequency noise, which natural images rarely contain.</p>
     </div>
   </div>
@@ -103,9 +102,9 @@
   <div class="wrap three">
     <div><h3>Exact link to information</h3><p>Averaged over stimuli, half the trace of the metric equals the mutual information:
       $I(R;X) = \tfrac12\langle \operatorname{tr} G(x)\rangle$.</p></div>
-    <div><h3>Derived from first principles</h3><p>The metric follows from how the geometry changes for an observer who sees only a blurred version of the stimulus. Coarse-grain the stimulus by adding Gaussian noise. Up to a constant factor, this
-      is the only metric that contracts at a rate set by the local response distribution and by what the responses encode.
-      It is also zero when the responses carry no information about the stimulus.</p></div>
+    <div><h3>Derived from first principles</h3><p>The metric follows from how distances should shrink as the stimulus is blurred by additive Gaussian noise. For this
+      coarse-graining, it is the only metric, up to a constant, that contracts at a rate set by the local response
+      distribution and by what the responses encode, and that is zero when the responses carry no information.</p></div>
     <div><h3>Practical for natural images</h3><p>A conditional diffusion model gives Monte Carlo estimates of the metric's leading
       eigenvectors for 64&times;64-pixel images. In V1 and V4 they are robust to differences in the encoding model fitted to the
       same area; those of the Fisher information are not.</p></div>
@@ -143,13 +142,12 @@
       same way to stimuli on either side of its peak, so it carries less mutual information (<b class="pref" data-panel="w-mi" tabindex="0">Mutual information</b> panel). The low-gain neuron has a quarter of
       the monotonic neuron's Fisher information everywhere, the least of the three, but it carries more mutual information than
       the single-peaked one.</p>
-    <p>The multi-scale metric captures both orderings. It coarse-grains the stimulus by adding Gaussian noise of variance $t$,
+    <p>The multi-scale metric ranks the three neurons as their mutual information does. It coarse-grains the stimulus by adding Gaussian noise of variance $t$,
       $x_t = x+\sqrt{t}\,z$. At each scale it takes the Fisher information $J_t$ of the coarse-grained likelihood
       $p_t(r\mid x_t)$ and averages it over the noisy stimuli. It then integrates over all scales:
       $$G(x)=\int_0^\infty \big\langle J_t(x_t)\big\rangle_{x_t\sim\mathcal N(x,\,t)}\,dt .$$
       For $t>0$, $J_t$ depends on the responses to neighbouring stimuli within about $\sqrt t$ and on the stimulus distribution,
-      so $G$ reflects global as well as local structure. Distances under $G$ rank the three neurons as their mutual information
-      does. The identity $I(R;X)=\tfrac12\langle G(x)\rangle_{p(x)}$ also holds numerically: in the <b class="pref" data-panel="w-mi" tabindex="0">Mutual information</b> panel the bars show the mutual information
+      so $G$ reflects global as well as local structure. The identity $I(R;X)=\tfrac12\langle G(x)\rangle_{p(x)}$ also holds numerically: in the <b class="pref" data-panel="w-mi" tabindex="0">Mutual information</b> panel the bars show the mutual information
       and the black ticks $\tfrac12\langle G\rangle$.</p>
     <p>The <b class="pref" data-panel="w-dist" tabindex="0">Distance</b> panel is the arc length from $x_0=-4$ to $x$ under a metric $g$:
       $$d(x_0,x)=\int_{x_0}^{x}\sqrt{g(u)}\,du,\qquad
@@ -163,22 +161,22 @@
   <div class="wrap two">
     <div>
       <h2>Estimating it for images</h2>
-      <p>For natural images the coarse-grained likelihood $p_t(r\mid x_t)$ averages over every image that could have produced the
-        noisy image $x_t$, which cannot be computed directly. A conditional diffusion model, trained to denoise images given neural
-        responses, gives the posterior mean $\hat x(x_t, r)=\mathbb E[x\mid x_t, r]$. Using Tweedie's identity,
-        $J_t(x_t)=\tfrac{1}{2t^2}\,\mathbb E\big[(\hat x(x_t,r)-\hat x(x_t,r'))(\hat x(x_t,r)-\hat x(x_t,r'))^\top\big]$ for two
-        independent responses $r, r'$. Responses are drawn at the denoised image $\hat x(x_t)$, an approximation that is most
-        accurate at fine scales. Averaging over scales, noisy images and response pairs gives a low-rank factor of $G(x)$ whose
-        singular vectors are its leading eigenvectors (Algorithm 1 of the paper).</p>
+      <p>For natural images, $p_t(r\mid x_t)$ averages over every image that could have produced the noisy image $x_t$ and
+        cannot be computed directly. A conditional diffusion model trained to denoise images given neural responses gives the
+        posterior mean $\hat x(x_t, r)=\mathbb E[x\mid x_t, r]$, and by Tweedie's identity
+        $J_t(x_t)=\tfrac{1}{2t^2}\,\mathbb E[\Delta\Delta^\top]$ with $\Delta=\hat x(x_t,r)-\hat x(x_t,r')$ for two independent
+        responses $r, r'$. Responses are drawn at the denoised image $\hat x(x_t)$, an approximation most accurate at fine
+        scales. Averaging over scales, noisy images and response pairs gives a low-rank factor of $G(x)$ whose singular vectors
+        are its leading eigenvectors (Algorithm 1 of the paper).</p>
     </div>
     <div>
       <h2>Applied to macaque V1 and V4</h2>
-      <p>Multi-unit activity recorded with Utah arrays in V1 and V4 of one macaque (one of the two in the dataset) during viewing
-        of 22,248 natural images from THINGS (Papale et al. 2025); the 50 most reliable channels per area. Each area is modelled by frozen ImageNet-trained features
-        (InceptionV3 or ResNet-50) with a per-channel spatial readout and Gaussian response noise close to the trial-to-trial
-        variability ($\sigma=0.22$). Test correlations are 0.75 (V1) and 0.71 (V4) for Inception, 0.78 and 0.70 for ResNet-50.
-        One conditional diffusion model is trained per area and encoder, on 100,000 grayscale 64&times;64 TinyImageNet images, each
-        paired with the encoder's predicted responses plus noise of the same $\sigma$.</p>
+      <p>We used multi-unit activity from Utah arrays in V1 and V4 of one of the two macaques of Papale et al. (2025), viewing
+        22,248 natural images from THINGS, and kept the 50 most reliable channels per area. Each area is modelled by frozen
+        ImageNet-trained features (InceptionV3 or ResNet-50), a per-channel spatial readout and Gaussian response noise close to
+        the trial-to-trial variability <span class="nowrap">($\sigma=0.22$)</span>; test correlations are 0.75 (V1) and 0.71 (V4) for Inception, 0.78 and
+        0.70 for ResNet-50. One conditional diffusion model per area and encoder is trained on 100,000 grayscale 64&times;64
+        TinyImageNet images, each paired with the encoder's predicted responses plus noise of the same $\sigma$.</p>
     </div>
   </div>
 </section>
@@ -189,14 +187,14 @@
     <h2>Results</h2>
     <div class="rcard">
       <div class="rtext"><h3>Different features in V1 and V4</h3>
-        <p>The leading eigenvectors of $G(x)$ are image changes of the kind natural images contain. The first is a local change of
-          brightness over the receptive fields. The next ones are edges and fine detail in V1, and broader changes that follow
-          the object's shape in V4. The leading eigenvectors of the Fisher information resemble high-frequency noise confined to
-          the receptive fields, with no clear difference between the two areas.</p></div>
+        <p>The leading eigenvectors of $G(x)$ are image changes of the kind natural images contain. In V1 they are localized and
+          edge-like and carry fine detail; in V4 they are broader and follow the object's shape. The leading eigenvectors of the
+          Fisher information resemble high-frequency noise confined to the receptive fields, with nearly the same spatial
+          frequency in the two areas.</p></div>
       <img src="docs/assets/images/cfg200/fig3_def.png" alt="Example image with V1 and V4 receptive fields and the leading four eigenvectors of G(x) and J(x)" loading="lazy">
     </div>
     <div class="rcard">
-      <div class="rtext"><h3>Constrained by the data, not by the model</h3>
+      <div class="rtext"><h3>Robust to the choice of encoding model</h3>
         <p>Two encoding models fitted to the same area agree on the leading eigenvectors of $G(x)$ more than one model fitted to
           the two areas. For the Fisher information the ordering reverses, so its leading eigenvectors depend more on the
           encoding model than on the recorded area. (Subspace alignment of the top $k$ eigenvectors, $k=2$ to 50, averaged over
@@ -204,10 +202,11 @@
       <img src="docs/assets/images/cfg200/fig4_de.png" alt="Subspace alignment of the top-k eigenvectors of G(x) and J(x) against k" loading="lazy">
     </div>
     <div class="rcard">
-      <div class="rtext"><h3>The same at every point of the field</h3>
-        <p>The reference image is perturbed along the two leading eigenvectors of $G(x)$, and at each perturbed image both metrics
-          are projected onto that plane. The multi-scale ellipses change smoothly and stay broadly consistent between the two
-          models (Inception solid, ResNet-50 dashed). The Fisher ellipses change rapidly and differ between models.</p></div>
+      <div class="rtext"><h3>Stable across nearby images</h3>
+        <p>The reference image is perturbed in fixed steps, 1% of its norm, along the two leading eigenvectors of each metric, and
+          at each perturbed image the metric is projected onto that plane. The multi-scale ellipses change little across the
+          plane and are nearly identical for the two models (Inception blue, ResNet-50 orange). The Fisher ellipses change
+          rapidly and differ between models.</p></div>
       <img src="docs/assets/images/cfg200/fig5.png" alt="Metric ellipses of G(x) and J(x) for two encoding models on a grid of perturbed images" loading="lazy">
     </div>
     <details class="more"><summary>More figures</summary>
@@ -228,10 +227,12 @@
   <div class="wrap">
     <h2>Explore the eigenvectors</h2>
     <p class="lead">Pick a held-out natural image. Rows: geometry, area and encoding model. Columns: the image and the four leading
-      eigenvectors of the Inception model (red and blue: opposite signs of the image change). Each ResNet-50 tile shows the
+      eigenvectors of the Inception model (red and blue: opposite signs of the image change). For the multi-scale metric
+      the first eigenvector, a broad brightness change over the receptive fields, is left out, as in the paper's figures.
+      Each ResNet-50 tile shows the
       ResNet-50 eigenvector (among its top 20) most similar to the Inception one above it, with its sign flipped to match
-      (eigenvectors are defined up to a sign). The multi-scale eigenvectors of the two models are similar; the Fisher ones are
-      not.</p>
+      (eigenvectors are defined up to a sign). For the multi-scale metric the two rows of each area look alike, for the Fisher
+      information they differ.</p>
     <div class="explorer card">
       <div class="thumbs" id="x-thumbs"></div>
       <div class="xview">
@@ -244,11 +245,10 @@
 
 <!-- ================================================================== CODE -->
 <section id="code" class="section">
-  <div class="wrap two">
-    <div>
-      <h2>Use it on your own model</h2>
-      <p>The <code>multigeom</code> package computes both metrics for any fitted PyTorch model of neural responses, and reproduces
-        the paper's analyses.</p>
+  <div class="wrap">
+    <h2>Use it on your own model</h2>
+    <p>The <code>multigeom</code> package computes both metrics for any fitted PyTorch model of neural responses, and reproduces
+      the paper's analyses.</p>
 <pre class="code"><code>pip install multigeom</code></pre>
 <pre class="code"><code>import multigeom
 
@@ -257,8 +257,7 @@ responses = encoder.predict(images)                          # [N, 50] predicted
 
 # The Fisher information J(x) of the encoder at an image x:
 fisher = multigeom.compute_fisher(image=x, encoder=encoder, sigma=0.22, top_k=10)</code></pre>
-      <p><a href="https://multigeom.github.io/multigeom/demos.html">Demo notebooks</a>, from the first call to the paper's figures.</p>
-    </div>
+    <p class="nbintro">The <a href="https://multigeom.github.io/multigeom/demos.html">demo notebooks</a> go from the first call to the paper's figures:</p>
     <div class="nbcards">
       <a class="nb" href="https://multigeom.github.io/multigeom/demos.html"><b>0</b><span>Use a fitted encoder: predict responses, compute J(x)</span></a>
       <a class="nb" href="https://multigeom.github.io/multigeom/demos.html"><b>1</b><span>Build and fit your own encoder</span></a>
@@ -275,16 +274,17 @@ fisher = multigeom.compute_fisher(image=x, encoder=encoder, sigma=0.22, top_k=10
       <p>Understanding how neural population responses represent sensory information is a central problem in systems neuroscience.
         One approach is to define a representational geometry on stimulus space in which distances reflect how reliably stimuli
         can be distinguished from neural activity. However, different constructions of these distances can lead to qualitatively
-        different conclusions about the neural code. Here, we show that a unique Riemannian representational geometry emerges from
-        first principles governing how distances contract as stimulus resolution is lost through coarse-graining. This results in
-        a multi-scale extension of the Fisher information metric, capturing encoding structure from fine stimulus details to coarse
-        global distinctions. The resulting geometry is exactly related to the mutual information encoded by the population: well
-        encoded stimulus directions, those contributing more to mutual information, are expanded, whereas poorly encoded
-        directions are contracted. The metric tensor can be estimated using diffusion models, making the framework practical for
-        large neural populations and high-dimensional stimuli. Applied to visual cortical responses to natural images, the
-        eigenvectors of the metric tensor identify stimulus variations that contribute most to information transmission, yielding
-        interpretable features that are robust to modelling choices. Together, these results provide a principled,
-        information-theoretic framework for characterising neural population codes.</p>
+        different conclusions about the neural code. Here, we show that, for a given coarse-graining of the stimulus, a unique
+        Riemannian representational geometry emerges from first principles governing how distances contract as stimulus
+        resolution is lost through coarse-graining. This results in a multi-scale extension of the Fisher information metric,
+        capturing encoding structure from fine stimulus details to coarse global distinctions. The resulting geometry is exactly
+        related to the mutual information encoded by the population: well encoded stimulus directions (those contributing
+        more to mutual information) are expanded, whereas poorly encoded directions are contracted. The metric tensor can be
+        estimated using diffusion models, making the framework practical for large neural populations and high-dimensional
+        stimuli. Applied to visual cortical responses to natural images, the eigenvectors of the metric tensor identify stimulus
+        variations that contribute most to the encoded stimulus information, yielding interpretable features that are robust to
+        modelling choices. Together, these results provide a principled, information-theoretic framework for characterising
+        neural population codes.</p>
     </details>
     <h2>Citation</h2>
     <div class="bib">
