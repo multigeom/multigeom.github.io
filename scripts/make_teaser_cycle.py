@@ -1,7 +1,7 @@
 """Extra images for the eigenvector demo at the top of the landing page.
 
 For each image index, writes static/data/teaser_img<idx>.json (same format as teaser.json: the image and the leading
-4 eigenvectors of G(x) and J(x) for the Inception model of V1 and V4, int8-quantised), and lists the indices under
+4 eigenvectors of G(x) and J(x) for the Inception model of V1 and V4, int8-quantised; for G, eigenvectors 2-5), and lists the indices under
 "cycle" in static/data/teaser.json. The frog of teaser.json stays the first image.
 
     python make_teaser_cycle.py --val <runs>/per_image --out <site root>
@@ -13,7 +13,7 @@ import json
 import numpy as np
 import torch
 
-from make_eigvec_assets import K, q8
+from make_eigvec_assets import FIRST, K, q8
 
 
 def main():
@@ -30,7 +30,7 @@ def main():
                 T["image"] = base64.b64encode(
                     ((d["image"][0, 0].numpy().clip(-1, 1) + 1) * 127.5).astype(np.uint8).tobytes()).decode()
             for m in ("G", "J"):
-                V = d[f"{m}_eigenvectors"].numpy().astype(np.float64)[:K]
+                V = d[f"{m}_eigenvectors"].numpy().astype(np.float64)[FIRST[m]:FIRST[m] + K]
                 V = V * np.sign(V.sum(1, keepdims=True) + 1e-12)          # display sign: positive mean
                 T[f"{m}_{area}"] = [dict(zip(("b64", "scale"), q8(v))) for v in V]
         json.dump(T, open(f"{a.out}/static/data/teaser_img{idx:04d}.json", "w"), separators=(",", ":"))
